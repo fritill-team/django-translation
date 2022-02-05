@@ -1,9 +1,19 @@
-from core.helper.base_manger import GetOrNoneManger
 from django import forms
 from django.db import models
 from django.forms.widgets import Textarea
 from django.utils.timezone import now
-from translation.translation import TranslatableModel
+from translation.models import TranslatableModel
+
+
+class GetOrNoneManger(models.Manager):
+    """Adds get_or_none method to objects
+    """
+
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
 
 
 # TranslatableModel

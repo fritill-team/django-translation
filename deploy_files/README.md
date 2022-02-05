@@ -6,6 +6,7 @@
 ```python
 INSTALLED_APPS = [
   ....
+'rest_framework',
 'translation'
 ]
 
@@ -41,7 +42,7 @@ urlpatterns = [
 ```python
 from django import forms
 from django.db import models
-from translation.translation import  TranslatableModel
+from translation.models import  TranslatableModel
 
 
 class Foo(TranslatableModel):
@@ -88,7 +89,7 @@ reverse("{yourpath}:translate", kwargs={
 Use ```utils.serializers.TranslatableModelSerializer``` instead of ``` rest_framework.serializers.ModelSerializer ```
 
 ```python
-from translation.translation import  TranslatableModelSerializer
+from translation.serializers import  TranslatableModelSerializer
 
 
 class FooSerializer(TranslatableModelSerializer):

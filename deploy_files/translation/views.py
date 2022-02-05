@@ -3,9 +3,15 @@ from django.urls import reverse
 from django.views import View
 from django.utils.translation import gettext_lazy as _
 from django.apps import apps
-
-from translation.translation import TranslationForm
 from django.conf import settings
+from django.utils.translation import gettext as _
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from translation.forms import TranslationForm
+from translation.serializers import TranslatableModelSerializer
 
 
 class AdminTranslateView(View):
@@ -64,3 +70,18 @@ class AdminTranslateView(View):
             "object": instance,
             "form": form
         }, content_type=None, status=422)
+
+
+class TranslationAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        model = apps.get_model(kwargs['app_label'], kwargs['model'])
+        instance = get_object_or_404(model, pk=kwargs['pk'])
+        locale = kwargs.get("locale", request.POST.get('locale'))
+
+        TranslatableModelSerializer.Meta.model = model
+        serializer = TranslatableModelSerializer(data=request.data, instance=instance, context={'locale': locale})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data=serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
