@@ -2,7 +2,7 @@
 
 ## Installation
 ```python
-    pip install django-translation
+pip install django-translation
 ```
 
 
