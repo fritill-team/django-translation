@@ -1,6 +1,6 @@
 # Model Translation
 
-## Installiation
+## Installation
 ```python
     pip install django-translation
 ```
