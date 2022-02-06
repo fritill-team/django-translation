@@ -4,13 +4,24 @@
 
 ### in settings.py file
 ```python
+from django.utils.translation import gettext_lazy as _
+
 INSTALLED_APPS = [
   ....
 'rest_framework',
 'translation'
 ]
-
-MAIN_LANGUAGE = 'ar' #you could add any language could you want
+# Language
+LANGUAGE_ENGLISH = "en"
+LANGUAGE_ARABIC = "ar"
+LANGUAGES = (
+    (LANGUAGE_ENGLISH, _("English")),
+    (LANGUAGE_ARABIC, _("Arabic"))
+)
+LANGUAGES_KEYS = [LANGUAGE_ENGLISH, LANGUAGE_ARABIC]
+MAIN_LANGUAGE = LANGUAGE_ARABIC #you could add any language could you want
+LANGUAGE_CODE = LANGUAGE_ARABIC
+FALLBACK_LOCALE = LANGUAGE_ARABIC
 ```
 
 ### in urls
@@ -42,7 +53,7 @@ urlpatterns = [
 ```python
 from django import forms
 from django.db import models
-from translation.translation import  TranslatableModel
+from translation.models import  TranslatableModel
 
 
 class Foo(TranslatableModel):
@@ -89,7 +100,7 @@ reverse("{yourpath}:translate", kwargs={
 Use ```utils.serializers.TranslatableModelSerializer``` instead of ``` rest_framework.serializers.ModelSerializer ```
 
 ```python
-from translation.translation import  TranslatableModelSerializer
+from translation.serializers import  TranslatableModelSerializer
 
 
 class FooSerializer(TranslatableModelSerializer):

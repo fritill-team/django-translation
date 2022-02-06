@@ -6,9 +6,8 @@ from django.test import TestCase, Client
 from django.urls import reverse, resolve
 from django.utils.translation import activate, get_language
 from django.utils.translation import gettext as _
-
-from apps.users.factories import UserFactory
-from translation.translation import TranslationForm, TranslatableModelForm, TranslatableModelSerializer
+from translation.forms import TranslationForm, TranslatableModelForm
+from translation.serializers import TranslatableModelSerializer
 from translation.tests.models import TranslatableTestModel as TestModel, TranslatableTestModel
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -349,7 +348,7 @@ class AdminTranslationViewTestCase(TestCase):
             title={"en": "Welcome :)", "ar": "اهلا"},
             description={"en": "Welcome :)", "ar": "اهلا"},
         )
-        self.url = reverse("admin:utils:translate",
+        self.url = reverse("translate:admin-view",
                            args=["tests", "TranslatableTestModel", self.model.pk]) + "?next=/test/"
 
     def tearDown(self):
@@ -399,11 +398,11 @@ class AdminTranslationViewTestCase(TestCase):
         context must have next link
         """
         with self.assertRaises(KeyError) as context:
-            self.response = self.client.get(reverse("admin:utils:translate", args=["admin", "testmodel", 1, 'ar']))
+            self.response = self.client.get(reverse("translate:admin-view", args=["admin", "testmodel", 1, 'ar']))
             self.assertTrue("key next must be included in request" in str(context.exception))
 
     def test_it_uses_the_next_locale_if_locale_is_not_provided_in_url(self):
-        url = reverse("admin:utils:translate",
+        url = reverse("translate:admin-view",
                       args=["tests", "TranslatableTestModel", self.model.pk]) + "?next=/test/"
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -706,16 +705,9 @@ class TranslationAPIViewTestCase(TestCase):
         self.test_model = TestModel.objects.create(title={settings.LANGUAGE_CODE: "title"},
                                                    description={"en": "description"})
         self.client = APIClient()
-        self.user = UserFactory()
-        self.client.login(email=self.user.email, password='secret')
-        self.url = reverse('api-v1:utils:translate', kwargs={"app_label": 'tests',
+        self.url = reverse('translate:api-view', kwargs={"app_label": 'tests',
                                                              'model': 'TranslatableTestModel',
                                                              'pk': '1'})
-
-    def test_it_return_401_when_user_unauthorized(self):
-        self.client.logout()
-        response = self.client.post(self.url)
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_it_translate_current_locale_value_when_locale_is_none(self):
         data = {"title": {settings.LANGUAGE_CODE: "other title"}}

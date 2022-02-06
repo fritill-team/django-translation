@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+from django.utils.translation import gettext_lazy as _
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -106,10 +106,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
+# Language
+LANGUAGE_ENGLISH = "en"
+LANGUAGE_ARABIC = "ar"
+LANGUAGES = (
+    (LANGUAGE_ENGLISH, _("English")),
+    (LANGUAGE_ARABIC, _("Arabic"))
+)
+LANGUAGES_KEYS = [LANGUAGE_ENGLISH, LANGUAGE_ARABIC]
+MAIN_LANGUAGE = LANGUAGE_ARABIC
+LANGUAGE_CODE = LANGUAGE_ARABIC
+FALLBACK_LOCALE = LANGUAGE_ARABIC
 
-LANGUAGE_CODE = 'en-us'
-
-MAIN_LANGUAGE = 'en'
 
 TIME_ZONE = 'UTC'
 
