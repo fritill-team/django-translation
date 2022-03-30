@@ -5,18 +5,7 @@ from django.utils.timezone import now
 from translation.models import TranslatableModel
 
 
-class GetOrNoneManger(models.Manager):
-    """Adds get_or_none method to objects
-    """
-
-    def get_or_none(self, **kwargs):
-        try:
-            return self.get(**kwargs)
-        except self.model.DoesNotExist:
-            return None
-
-
-# TranslatableModel
+# Translatable Model
 class TranslatableTestModel(TranslatableModel):
     translatable = {
         "title": {"field": forms.CharField},
@@ -28,28 +17,3 @@ class TranslatableTestModel(TranslatableModel):
     description = models.JSONField(blank=True, null=True)
     created_at = models.DateTimeField(auto_created=True, default=now, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-
-
-class TestManager(GetOrNoneManger):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs)
-
-
-class MyTest(models.Model):
-    objects = TestManager()
-    title = models.CharField(max_length=20, blank=True, null=True)
-    new_test = models.ForeignKey("MyNewTest", on_delete=models.CASCADE, blank=True, null=True)
-
-    def __str__(self):
-        return self.title
-
-
-class TestManagerTwo(GetOrNoneManger):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs)
-
-
-class MyNewTest(models.Model):
-    objects = TestManagerTwo()
-
-    description = models.CharField(max_length=20, blank=True, null=True)

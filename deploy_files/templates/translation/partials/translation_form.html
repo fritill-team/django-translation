@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load model_translation %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            {% blocktranslate %}
+                Translate: {{ object }} to {{ locale }}
+            {% endblocktranslate %}
+        </h3>
+        <div class="card-tools">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon"
+                        data-toggle="dropdown">
+                    {% translate "Translate to" %}
+                </button>
+                <div class="dropdown-menu" role="menu">
+                    {% for key, text in languages.items %}
+                        <a class="dropdown-item"
+                           href="{% url "translation:translate_form_locale" app_label=app_label model=model pk=object.pk locale=key %}?next={{ next }}">
+                            {{ text }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" dir="{% if locale == 'ar' %}rtl{% endif %}">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ locale }}" name="locale">
+            {# TODO Set Language Directions in Settings #}
+            <input type="hidden" name="next" value="{{ next }}">
+            {{ form.as_ul }}
+            <div class="card-footer">
+                <a class="btn btn-link text-danger"
+                   href="{{ next }}">{% translate "Cancel" %}</a>
+                <input class="btn btn-success" type="submit" value="{% translate "Save" %}" name="Save"/>
+                <button class="btn btn-primary" type="submit">
+                    {% translate "Finish" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

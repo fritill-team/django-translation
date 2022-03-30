@@ -26,7 +26,7 @@ class AdminTranslateView(View):
         languages = dict(settings.LANGUAGES)
         languages.pop(settings.LANGUAGE_CODE)
 
-        return render(request, "translate.html", context={
+        return render(request, "translation/translate.html", context={
             "languages": languages,
             "next": request.GET.get('next'),
             "locale": locale,
@@ -42,6 +42,7 @@ class AdminTranslateView(View):
 
         model = apps.get_model(kwargs['app_label'], kwargs['model'])
         instance = get_object_or_404(model, pk=kwargs['pk'])
+
         locale = kwargs.get("locale", request.POST.get('locale'))
         next_link = request.POST.get('next')
 
@@ -49,8 +50,8 @@ class AdminTranslateView(View):
 
         if form.is_valid():
             form.save()
-            if "save" in request.POST:
-                return redirect(reverse('admin:utils:translate', kwargs={**kwargs}) + "?next={}".format(next_link))
+            if "save" in request.POST:  # save and go to the next language
+                return redirect(reverse('translation:translate_form', kwargs={**kwargs}) + "?next={}".format(next_link))
             else:
                 return redirect(to=next_link)
 
@@ -61,7 +62,7 @@ class AdminTranslateView(View):
             if isinstance(getattr(form.instance, field), str):
                 instance.set_translation(field, locale, getattr(form.instance, field), soft=True)
 
-        return render(request, "translate.html", context={
+        return render(request, "translation/translate.html", context={
             "languages": languages,
             "next": request.GET.get('next'),
             "locale": kwargs.get("locale"),

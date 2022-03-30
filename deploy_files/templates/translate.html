@@ -1,0 +1,23 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+{% load model_translation %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs"><a href="{{ next }}">{% trans 'GO Back' %}</a></div>{% endblock %}
+
+{% block content %}
+
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" value="{{ locale }}" name="locale">
+        <input type="hidden" name="next" value="{{ next }}">
+
+        {% for field in form %}
+            <div>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Transalte"/>
+        <a href="{{ next }}">Cancel</a>
+    </form>
+{% endblock %}

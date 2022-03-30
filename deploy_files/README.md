@@ -5,9 +5,9 @@
 ### in settings.py file
 ```python
 INSTALLED_APPS = [
-  ....
-'rest_framework',
-'translation'
+  ...,
+ 'rest_framework',
+ 'translation'
 ]
 
 MAIN_LANGUAGE = 'ar' #you could add any language could you want
