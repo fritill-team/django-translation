@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'translation',
 
+
+    # testing ModelSerializer
+    'translation.tests'
+
 ]
 
 MIDDLEWARE = [
